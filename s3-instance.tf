@@ -64,3 +64,14 @@ resource "aws_iam_role_policy_attachment" "some_bucket_policy" {
   role       = aws_iam_role.fawaz-tfe-es-role.name
   policy_arn = aws_iam_policy.bucket_policy.arn
 }
+
+locals {
+  object_source = "${path.module}/license.rli"
+}
+
+resource "aws_s3_object" "file_upload" {
+  bucket      = aws_s3_bucket.fawaz-tfe-es-s3.id
+  key         = "license.rli"
+  source      = local.object_source
+  source_hash = filemd5(local.object_source)
+}
